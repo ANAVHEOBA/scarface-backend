@@ -1,1 +1,8 @@
-gitignorenode_modulesdist.env
+# Ignore node_modules directory
+node_modules/
+
+# Ignore dist directory
+dist/
+
+# Ignore .env file
+.env
