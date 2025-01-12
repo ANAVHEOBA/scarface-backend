@@ -1,9 +1,23 @@
-import { createRouter } from 'next-connect'
+import express, { Router } from 'express'
 import { initiatePayment, handleWebhook } from './investment.controller'
 
-const router = createRouter()
+const router: Router = express.Router()
 
-router.post('/api/investment/purchase', initiatePayment)
-router.post('/api/investment/webhook', handleWebhook)
+// Remove type casting and use async middleware functions
+router.post('/purchase', async (req, res, next) => {
+  try {
+    await initiatePayment(req, res)
+  } catch (error) {
+    next(error)
+  }
+})
+
+router.post('/webhook', async (req, res, next) => {
+  try {
+    await handleWebhook(req, res)
+  } catch (error) {
+    next(error)
+  }
+})
 
 export default router

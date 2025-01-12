@@ -1,8 +1,14 @@
-import { createRouter } from 'next-connect'
+import express, { Router } from 'express'
 import { getPreviewTracks } from './tracks.controller'
 
-const router = createRouter()
+const router: Router = express.Router()
 
-router.get('/api/tracks/preview', getPreviewTracks)
+router.get('/preview', async (req, res, next) => {
+  try {
+    await getPreviewTracks(req, res)
+  } catch (error) {
+    next(error)
+  }
+})
 
 export default router

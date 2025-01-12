@@ -1,25 +1,23 @@
-import { NextResponse } from 'next/server'
+import { Request, Response } from 'express'
 import { getLiveStatus } from './live.crud'
 import { LiveStatusSchema } from './live.schema'
 
-export async function getCurrentLiveStatus() {
+export async function getCurrentLiveStatus(req: Request, res: Response): Promise<void> {
   try {
     const liveStatus = await getLiveStatus()
     
     // Validate response data
     const validatedStatus = LiveStatusSchema.parse(liveStatus)
 
-    return NextResponse.json(validatedStatus, { 
-      status: 200,
-      headers: {
-        'Cache-Control': 'public, s-maxage=30', // Cache for 30 seconds
-      }
-    })
+    // Set cache headers
+    res.set('Cache-Control', 'public, s-maxage=30')
+    
+    res.json(validatedStatus)  // Remove return
 
   } catch (error) {
     console.error('Failed to fetch live status:', error)
-    return NextResponse.json({ 
+    res.status(500).json({ 
       error: 'Failed to fetch live status' 
-    }, { status: 500 })
+    })
   }
 }

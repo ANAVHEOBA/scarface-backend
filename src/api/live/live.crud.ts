@@ -1,21 +1,14 @@
-import { prisma } from '@/lib/prisma'
-import type { LiveStatus } from './live.model'
+import { LiveStatus } from './live.model'
+import { LiveStreamModel } from './live.model'
 
 export async function getLiveStatus(): Promise<LiveStatus> {
-  const currentStream = await prisma.liveStream.findFirst({
-    where: {
-      isLive: true,
-      endedAt: null,
-    },
-    select: {
-      isLive: true,
-      streamUrl: true,
-      platform: true,
-    },
-    orderBy: {
-      startedAt: 'desc',
-    },
+  const currentStream = await LiveStreamModel.findOne({
+    isLive: true,
+    endedAt: null
   })
+  .sort({ startedAt: -1 })
+  .select('isLive streamUrl platform')
+  .lean()
 
   return currentStream || {
     isLive: false,

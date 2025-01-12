@@ -1,19 +1,27 @@
-import nodemailer from "nodemailer";
+import nodemailer, { Transporter } from "nodemailer";
 
-let mailTransporter = nodemailer.createTransport({
+const mailTransporter: Transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
-    user: "your-email@gmail.com", // Update this
+    user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASSWORD,
   },
 });
 
+interface EPEmailParams {
+  name: string;
+  downloadLink: string;
+}
+
+interface PaymentEmailParams {
+  name: string;
+  amount: string;
+  reference: string;
+}
+
 export const sendEPDownloadEmail = async (
   emailTo: string,
-  emailParams: {
-    name: string;
-    downloadLink: string;
-  }
+  emailParams: EPEmailParams
 ) => {
   const { name, downloadLink } = emailParams;
 
@@ -92,8 +100,8 @@ export const sendEPDownloadEmail = async (
     </html>
   `;
 
-  let mailDetails = {
-    from: "your-email@gmail.com", // Update this
+  const mailDetails = {
+    from: process.env.EMAIL_USER,
     to: emailTo,
     subject: "Your EP Download Is Ready - Scarface Republic",
     html: emailContent,
@@ -110,11 +118,7 @@ export const sendEPDownloadEmail = async (
 
 export const sendPaymentConfirmationEmail = async (
   emailTo: string,
-  emailParams: {
-    name: string;
-    amount: string;
-    reference: string;
-  }
+  emailParams: PaymentEmailParams
 ) => {
   const { name, amount, reference } = emailParams;
 
@@ -150,8 +154,8 @@ export const sendPaymentConfirmationEmail = async (
     </html>
   `;
 
-  let mailDetails = {
-    from: "your-email@gmail.com", // Update this
+  const mailDetails = {
+    from: process.env.EMAIL_USER,
     to: emailTo,
     subject: "Payment Confirmation - Scarface Republic",
     html: emailContent,

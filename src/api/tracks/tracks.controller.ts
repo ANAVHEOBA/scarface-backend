@@ -1,8 +1,8 @@
-import { IncomingMessage, ServerResponse } from 'http'
+import { Request, Response } from 'express'
 import { getTrackPreviews } from './tracks.crud'
 import { TrackPreviewSchema } from './tracks.schema'
 
-export async function getPreviewTracks(req: IncomingMessage, res: ServerResponse) {
+export async function getPreviewTracks(req: Request, res: Response): Promise<void> {
   try {
     const tracks = await getTrackPreviews()
     
@@ -11,12 +11,12 @@ export async function getPreviewTracks(req: IncomingMessage, res: ServerResponse
       TrackPreviewSchema.parse(track)
     )
 
-    res.writeHead(200, { 'Content-Type': 'application/json' })
-    res.end(JSON.stringify({ tracks: validatedTracks }))
+    res.json({ tracks: validatedTracks })  // Remove return
 
   } catch (error) {
     console.error('Failed to fetch preview tracks:', error)
-    res.writeHead(500, { 'Content-Type': 'application/json' })
-    res.end(JSON.stringify({ error: 'Failed to fetch preview tracks' }))
+    res.status(500).json({ 
+      error: 'Failed to fetch preview tracks' 
+    })
   }
 }

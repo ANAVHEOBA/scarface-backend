@@ -1,7 +1,6 @@
 import { z } from 'zod'
 
 export const LiveStreamSchema = z.object({
-  id: z.string().uuid(),
   isLive: z.boolean(),
   streamUrl: z.string().url(),
   platform: z.enum(['youtube', 'twitch', 'instagram']),
@@ -11,6 +10,6 @@ export const LiveStreamSchema = z.object({
 
 export const LiveStatusSchema = z.object({
   isLive: z.boolean(),
-  streamUrl: z.string().url(),
+  streamUrl: z.string(),
   platform: z.enum(['youtube', 'twitch', 'instagram']),
 })
